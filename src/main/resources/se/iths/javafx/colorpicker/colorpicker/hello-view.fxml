@@ -1,16 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="se.iths.javafx.colorpicker.colorpicker.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="418.0" prefWidth="605.0" snapToPixel="false" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.iths.javafx.colorpicker.colorpicker.HelloController">
+   <HBox alignment="TOP_CENTER" prefHeight="100.0">
+      <children>
+         <TabPane centerShape="false" prefHeight="87.0" prefWidth="603.0" tabClosingPolicy="UNAVAILABLE">
+           <tabs>
+             <Tab text="Shapes">
+               <content>
+                 <AnchorPane minHeight="0.0" minWidth="0.0">
+                        <children>
+                           <Button layoutX="14.0" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="Circle" />
+                           <Button layoutX="83.0" layoutY="2.0" mnemonicParsing="false" text="Square" />
+                           <Button layoutX="142.0" layoutY="2.0" mnemonicParsing="false" text="Rectangle" />
+                           <Button layoutX="217.0" layoutY="2.0" mnemonicParsing="false" text="Button" />
+                        </children>
+                     </AnchorPane>
+               </content>
+             </Tab>
+             <Tab text="Color Picker">
+               <content>
+                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+             </Tab>
+           </tabs>
+         </TabPane>
+      </children>
+   </HBox>
+    <Button onAction="#onHelloButtonClick" text="Hello!" />
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
+
+    <Label fx:id="welcomeText" prefHeight="44.0" prefWidth="369.0" />
+   <Canvas height="276.0" width="349.0" />
 </VBox>
