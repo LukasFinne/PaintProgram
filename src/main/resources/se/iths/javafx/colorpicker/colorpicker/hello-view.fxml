@@ -1,38 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.*?>
+<?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="418.0" prefWidth="605.0" snapToPixel="false" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.iths.javafx.colorpicker.colorpicker.HelloController">
-   <HBox alignment="TOP_CENTER" prefHeight="100.0">
-      <children>
-         <TabPane centerShape="false" prefHeight="87.0" prefWidth="603.0" tabClosingPolicy="UNAVAILABLE">
-           <tabs>
-             <Tab text="Shapes">
-               <content>
-                 <AnchorPane minHeight="0.0" minWidth="0.0">
-                        <children>
-                           <Button layoutX="14.0" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="Circle" />
-                           <Button layoutX="83.0" layoutY="2.0" mnemonicParsing="false" text="Square" />
-                           <Button layoutX="142.0" layoutY="2.0" mnemonicParsing="false" text="Rectangle" />
-                           <Button layoutX="217.0" layoutY="2.0" mnemonicParsing="false" text="Button" />
-                        </children>
-                     </AnchorPane>
-               </content>
-             </Tab>
-             <Tab text="Color Picker">
-               <content>
-                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-               </content>
-             </Tab>
-           </tabs>
-         </TabPane>
-      </children>
-   </HBox>
-    <Button onAction="#onHelloButtonClick" text="Hello!" />
 
+<?import se.iths.javafx.colorpicker.colorpicker.ResizableCanvas?>
 
-    <Label fx:id="welcomeText" prefHeight="44.0" prefWidth="369.0" />
-   <Canvas height="276.0" width="349.0" />
+<VBox nodeOrientation="LEFT_TO_RIGHT" prefHeight="418.0" prefWidth="582.0" snapToPixel="false" styleClass="root" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.iths.javafx.colorpicker.colorpicker.HelloController">
+    <MenuBar>
+            <Menu mnemonicParsing="false" text="Shapes">
+                    <MenuItem>
+                        <graphic>
+                            <Button fx:id="circle" mnemonicParsing="false" text="Circle" />
+                        </graphic></MenuItem>
+                    <MenuItem>
+                        <graphic>
+                            <Button fx:id="square" mnemonicParsing="false" text="Square" />
+                        </graphic></MenuItem>
+                    <MenuItem>
+                        <graphic>
+                            <Button onMouseClicked="#rectangle" fx:id="rectangle" mnemonicParsing="false" text="Rectangle" />
+                        </graphic></MenuItem>
+            </Menu>
+            <Menu mnemonicParsing="false" text="ColorPicker">
+                    <MenuItem mnemonicParsing="false">
+                        <graphic>
+                            <ColorPicker fx:id="colorPicker"/>
+                        </graphic></MenuItem>
+            </Menu>
+
+    </MenuBar>
+
+    <StackPane prefWidth="400" prefHeight="800">
+        <ResizableCanvas fx:id="canvas" onMouseClicked="#canvasClicked"/>
+    </StackPane>
+
+    <stylesheets>
+        <URL value="@css/stylesheet.css" />
+    </stylesheets>
+
 </VBox>
