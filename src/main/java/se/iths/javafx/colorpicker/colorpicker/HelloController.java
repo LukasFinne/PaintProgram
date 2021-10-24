@@ -2,10 +2,8 @@ package se.iths.javafx.colorpicker.colorpicker;
 
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
@@ -17,11 +15,13 @@ public class HelloController {
     @FXML
     private Button circle;
     @FXML
-    private Button rectangle;
+    private ToggleButton rectangle;
     @FXML
     private Button square;
     @FXML
     public ColorPicker colorPicker;
+
+    private static boolean rectangleShape;
 
     public HelloController() {
     }
@@ -41,19 +41,30 @@ public class HelloController {
     private void draw() {
         var gc = canvas.getGraphicsContext2D();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        for (var shape : model.shapes) {
-            gc.setFill(shape.getColor());
-            gc.fillRect(shape.getX(), shape.getY(), 25, 25);
-        }
+            for (var shape : model.shapes) {
+                gc.setFill(shape.getColor());
+                if(shape.getName().equals("C"))
+                    gc.fillOval(shape.getX(),shape.getY(), 25 ,25);
+                if(shape.getName().equals("R"))
+                    gc.fillRect(shape.getX(),shape.getY(), 25 ,25);
+            }
     }
 
     public void canvasClicked(MouseEvent event) {
-        model.shapes.add(new Shape(model.getColor(), event.getX(), event.getY()));
+        var gc = canvas.getGraphicsContext2D();
+        if(rectangle.isSelected())
+            model.shapes.add(new Rectangle(model.getColor(), event.getX(), event.getY(), "R"));
+        else
+            model.shapes.add(new Circle(model.getColor(), event.getX(), event.getY(), "C"));
         draw();
     }
 
     public void rectangle(MouseEvent event) {
-        model.shapes.add(new Rectangle(model.getColor(), event.getX(), event.getY()));
-        draw();
+        rectangleShape = true;
+        System.out.println("test");
+    }
+
+    public void release(MouseEvent event) {
+        rectangleShape = false;
     }
 }

@@ -3,32 +3,32 @@
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-
 <?import se.iths.javafx.colorpicker.colorpicker.ResizableCanvas?>
 
 <VBox nodeOrientation="LEFT_TO_RIGHT" prefHeight="418.0" prefWidth="582.0" snapToPixel="false" styleClass="root" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.iths.javafx.colorpicker.colorpicker.HelloController">
+    <ToggleButton  fx:id="rectangle" mnemonicParsing="false" text="Rectangle" />
     <MenuBar>
-            <Menu mnemonicParsing="false" text="Shapes">
-                    <MenuItem>
-                        <graphic>
-                            <Button fx:id="circle" mnemonicParsing="false" text="Circle" />
-                        </graphic></MenuItem>
-                    <MenuItem>
-                        <graphic>
-                            <Button fx:id="square" mnemonicParsing="false" text="Square" />
-                        </graphic></MenuItem>
-                    <MenuItem>
-                        <graphic>
-                            <Button onMouseClicked="#rectangle" fx:id="rectangle" mnemonicParsing="false" text="Rectangle" />
-                        </graphic></MenuItem>
-            </Menu>
-            <Menu mnemonicParsing="false" text="ColorPicker">
-                    <MenuItem mnemonicParsing="false">
-                        <graphic>
-                            <ColorPicker fx:id="colorPicker"/>
-                        </graphic></MenuItem>
-            </Menu>
+        <Menu mnemonicParsing="false" text="Shapes">
+            <MenuItem>
+                <graphic>
+                    <Button fx:id="circle" mnemonicParsing="false" text="Circle" />
+                </graphic></MenuItem>
+            <MenuItem>
+                <graphic>
+                    <Button fx:id="square" mnemonicParsing="false" text="Square" />
+                </graphic></MenuItem>
+            <MenuItem>
+                <graphic>
+                    <Button onMouseClicked="#rectangle"  mnemonicParsing="false" text="Rectangle" />
+                </graphic>
+            </MenuItem>
+        </Menu>
+        <Menu mnemonicParsing="false" text="ColorPicker">
+            <MenuItem mnemonicParsing="false">
+                <graphic>
+                    <ColorPicker fx:id="colorPicker"/>
+                </graphic></MenuItem>
+        </Menu>
 
     </MenuBar>
 

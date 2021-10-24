@@ -2,9 +2,9 @@ package se.iths.javafx.colorpicker.colorpicker;
 
 import javafx.scene.paint.Color;
 
-public class Rectangle extends Shape{
+public class Circle extends Shape{
 
-    public Rectangle(Color color, double x, double y, String name) {
+    public Circle(Color color, double x, double y, String name) {
         super(color, x, y, name);
     }
 }

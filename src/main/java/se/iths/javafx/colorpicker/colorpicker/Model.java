@@ -16,6 +16,7 @@ public class Model {
 
     List<Shape> shapes = new ArrayList<>();
 
+
     public Model() {
 
         this.inColor = new SimpleBooleanProperty();
