@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 
 public class Rectangle extends Shape{
 
-    public Rectangle(Color color, double x, double y, String name) {
-        super(color, x, y, name);
+    public Rectangle(Color color, double x, double y, String name, int height, int width) {
+        super(color, x, y, name, height, width);
     }
 }

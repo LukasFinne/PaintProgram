@@ -5,14 +5,20 @@ import javafx.scene.paint.Color;
 public class Shape {
     private Color color;
     private String name;
+    private int height;
+    private int width;
     private double x;
+
+
     private double y;
 
-    public Shape(Color color, double x, double y, String name) {
+    public Shape(Color color, double x, double y, String name, int height, int width) {
         this.color = color;
         this.x = x;
         this.name = name;
         this.y = y;
+        this.height = height;
+        this.width = width;
     }
 
     public Color getColor() {
@@ -25,6 +31,14 @@ public class Shape {
 
     public String getName() {
         return name;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
     }
 
     public double getX() {

@@ -12,6 +12,10 @@ MenuItem{
     -fx-alignment: center;
 }
 
+RadioButton{
+    
+}
+
 ColorPicker{
     -fx-alignment: center;
     -fx-background-color: #ededed;
