@@ -12,14 +12,12 @@
             <MenuItem>
                 <graphic>
                     <RadioButton onAction="#newWindow" fx:id="circle" mnemonicParsing="false" text="Circle" />
-                </graphic></MenuItem>
+                </graphic>
+            </MenuItem>
+
             <MenuItem>
                 <graphic>
-                    <Button fx:id="square" mnemonicParsing="false" text="Square" />
-                </graphic></MenuItem>
-            <MenuItem>
-                <graphic>
-                    <RadioButton onAction="#newWindow" fx:id="rectangle" mnemonicParsing="false" text="Rectangle" />
+                    <RadioButton onAction="#newWindow" fx:id="square" mnemonicParsing="false" text="Square" />
                 </graphic>
             </MenuItem>
         </Menu>

@@ -21,7 +21,7 @@ public class Model {
 
     public Model() {
         this.inColor = new SimpleBooleanProperty();
-        this.color = new SimpleObjectProperty<>();
+        this.color = new SimpleObjectProperty<>(Color.BLACK);
     }
 
     public Color getColor() {

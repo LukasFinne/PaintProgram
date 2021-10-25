@@ -5,7 +5,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -14,8 +13,7 @@ import javafx.stage.Stage;
 
 public class HelloController {
 
-    private int height;
-    private int width;
+    private Double size;
 
     Model model;
 
@@ -26,9 +24,7 @@ public class HelloController {
     @FXML
     private RadioButton circle;
     @FXML
-    private RadioButton rectangle;
-    @FXML
-    private Button square;
+    private RadioButton square;
     @FXML
     public ColorPicker colorPicker;
 
@@ -42,9 +38,7 @@ public class HelloController {
     public void initialize() {
         model = new Model();
 
-
-        model.setColor(Color.BLACK);
-        rectangle.setToggleGroup(model.toggleGroup);
+        square.setToggleGroup(model.toggleGroup);
         circle.setToggleGroup(model.toggleGroup);
         colorPicker.valueProperty().bindBidirectional(model.colorProperty());
         canvas.widthProperty().addListener(observable -> draw());
@@ -57,19 +51,21 @@ public class HelloController {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
             for (var shape : model.shapes) {
                 gc.setFill(shape.getColor());
-                if(shape.getName().equals("C"))
-                    gc.fillOval(shape.getX(),shape.getY(), shape.getHeight(), shape.getWidth());
-                if(shape.getName().equals("R"))
-                    gc.fillRect(shape.getX(),shape.getY(), shape.getHeight(), shape.getWidth());
+                shape.draw(gc);
             }
     }
 
     public void canvasClicked(MouseEvent event) {
         var gc = canvas.getGraphicsContext2D();
-        if(rectangle.isSelected())
-            model.shapes.add(new Rectangle(model.getColor(), event.getX(), event.getY(), "R", height, width));
-        if(circle.isSelected())
-            model.shapes.add(new Circle(model.getColor(), event.getX(), event.getY(), "C", height, width));
+        if(square.isSelected() && !event.getButton().name().equals("SECONDARY"))
+            model.shapes.add(Shapes.rectangleOf(  event.getX(), event.getY(), size,model.getColor()));
+        if (circle.isSelected() && !event.getButton().name().equals("SECONDARY") )
+            model.shapes.add(Shapes.circleOf( event.getX(), event.getY(), size, model.getColor() ));
+        if(event.getButton().name().equals("SECONDARY")){
+           model.shapes.stream()
+                    .filter(shape -> shape.isInside(event.getX(),event.getY()))
+                    .findFirst().ifPresent(shape -> shape.setColor(Color.RED));
+        }
         draw();
     }
 
@@ -78,15 +74,13 @@ public class HelloController {
         newWindow.setTitle("Shape");
 
         Label title = new Label("Select what size of shape you want! ");
-        TextField height = new TextField("Enter the width");
-        TextField width = new TextField("Enter the height");
+        TextField size = new TextField("Enter your desired size!");
         Button button = new Button("OK");
         button.setOnAction(event -> {
-           this.width = Integer.parseInt(width.getText());
-           this.height = Integer.parseInt(height.getText());
+           this.size = Double.parseDouble(size.getText());
            newWindow.close();
         });
-        VBox container = new VBox(title, height, width, button);
+        VBox container = new VBox(title, size, button);
 
         container.setSpacing(15);
         container.setPadding(new Insets(25));

@@ -1,8 +1,9 @@
 package se.iths.javafx.colorpicker.colorpicker;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Shape {
+public abstract sealed class Shape permits Circle, Square {
     private Color color;
     private String name;
     private int height;
@@ -12,14 +13,15 @@ public class Shape {
 
     private double y;
 
-    public Shape(Color color, double x, double y, String name, int height, int width) {
+    public Shape(Color color, double x, double y) {
         this.color = color;
         this.x = x;
-        this.name = name;
         this.y = y;
-        this.height = height;
-        this.width = width;
     }
+
+    public abstract void draw(GraphicsContext gc);
+
+    public abstract boolean isInside(double x, double y);
 
     public Color getColor() {
         return color;
@@ -27,18 +29,6 @@ public class Shape {
     public Shape setColor(Color color) {
         this.color = color;
         return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getWidth() {
-        return width;
     }
 
     public double getX() {
