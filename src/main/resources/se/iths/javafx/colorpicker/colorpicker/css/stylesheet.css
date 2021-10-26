@@ -1,13 +1,5 @@
 
-Button{
-    -fx-background-color: #ededed;
-    -fx-padding: 10 30px;
-    -fx-border-radius: 0px;
-    -fx-cursor: pointer;
-    -fx-border-width: 1px;
-    -fx-border-style: solid;
-    -fx-border-color: #ccc;
-}
+
 MenuItem{
     -fx-alignment: center;
 }

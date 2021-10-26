@@ -11,13 +11,13 @@
         <Menu mnemonicParsing="false" text="Shapes">
             <MenuItem>
                 <graphic>
-                    <RadioButton onAction="#newWindow" fx:id="circle" mnemonicParsing="false" text="Circle" />
+                    <RadioButton fx:id="circle" mnemonicParsing="false" text="Circle" />
                 </graphic>
             </MenuItem>
 
             <MenuItem>
                 <graphic>
-                    <RadioButton onAction="#newWindow" fx:id="square" mnemonicParsing="false" text="Square" />
+                    <RadioButton fx:id="square" mnemonicParsing="false" text="Square" />
                 </graphic>
             </MenuItem>
         </Menu>
@@ -29,8 +29,9 @@
         </Menu>
 
     </MenuBar>
-
-    <Label fx:id="currentTool"/>
+    <Label text="Write your desired size: "/>
+    <TextField  fx:id="size"  />
+    <Button fx:id="button" onAction="#undo" text="Undo"/>
     <StackPane prefWidth="400" prefHeight="800">
         <ResizableCanvas fx:id="canvas" onMouseClicked="#canvasClicked"/>
     </StackPane>

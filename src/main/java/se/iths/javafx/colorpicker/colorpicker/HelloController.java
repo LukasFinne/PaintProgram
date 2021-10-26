@@ -1,25 +1,22 @@
 package se.iths.javafx.colorpicker.colorpicker;
 
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
+import javafx.util.converter.NumberStringConverter;
 
 public class HelloController {
-
-    private Double size;
 
     Model model;
 
     @FXML
-    public Label currentTool;
-
+    public Button button;
+    @FXML
+    public TextField size;
     public Canvas canvas;
     @FXML
     private RadioButton circle;
@@ -41,6 +38,8 @@ public class HelloController {
         square.setToggleGroup(model.toggleGroup);
         circle.setToggleGroup(model.toggleGroup);
         colorPicker.valueProperty().bindBidirectional(model.colorProperty());
+        size.textProperty().bindBidirectional(model.sizeProperty(), new NumberStringConverter());
+        size.textProperty().addListener(this::numericOnly);
         canvas.widthProperty().addListener(observable -> draw());
         canvas.heightProperty().addListener(observable -> draw());
     }
@@ -49,47 +48,41 @@ public class HelloController {
         var gc = canvas.getGraphicsContext2D();
 
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-            for (var shape : model.shapes) {
-                gc.setFill(shape.getColor());
-                shape.draw(gc);
-            }
+        for (var shape : model.shapes) {
+            gc.setFill(shape.getColor());
+            shape.draw(gc);
+        }
     }
 
     public void canvasClicked(MouseEvent event) {
-        var gc = canvas.getGraphicsContext2D();
-        if(square.isSelected() && !event.getButton().name().equals("SECONDARY"))
-            model.shapes.add(Shapes.rectangleOf(  event.getX(), event.getY(), size,model.getColor()));
-        if (circle.isSelected() && !event.getButton().name().equals("SECONDARY") )
-            model.shapes.add(Shapes.circleOf( event.getX(), event.getY(), size, model.getColor() ));
-        if(event.getButton().name().equals("SECONDARY")){
-           model.shapes.stream()
-                    .filter(shape -> shape.isInside(event.getX(),event.getY()))
+        if (square.isSelected() && !event.getButton().name().equals("SECONDARY")) {
+            model.shapes.add(Shapes.rectangleOf(event.getX(), event.getY(), model.sizeProperty().getValue(), model.getColor()));
+            model.deque.addLast(() -> model.shapes.remove(model.shapes.size() -1));
+        }
+        if (circle.isSelected() && !event.getButton().name().equals("SECONDARY")) {
+            model.shapes.add(Shapes.circleOf(event.getX(), event.getY(), model.sizeProperty().getValue(), model.getColor()));
+            model.deque.addLast(() -> model.shapes.remove(model.shapes.size() -1));
+        }
+
+        if (event.getButton().name().equals("SECONDARY")) {
+            model.shapes.stream()
+                    .filter(shape -> shape.isInside(event.getX(), event.getY()))
                     .findFirst().ifPresent(shape -> shape.setColor(Color.RED));
         }
         draw();
     }
 
-    public void newWindow(){
-        Stage newWindow = new Stage();
-        newWindow.setTitle("Shape");
-
-        Label title = new Label("Select what size of shape you want! ");
-        TextField size = new TextField("Enter your desired size!");
-        Button button = new Button("OK");
-        button.setOnAction(event -> {
-           this.size = Double.parseDouble(size.getText());
-           newWindow.close();
-        });
-        VBox container = new VBox(title, size, button);
-
-        container.setSpacing(15);
-        container.setPadding(new Insets(25));
-        container.setAlignment(Pos.CENTER);
-
-        newWindow.setScene(new Scene(container));
-
-        newWindow.show();
+    public void undo(ActionEvent actionEvent) {
+        if(model.deque.isEmpty())
+            return;
+        Command command = model.deque.removeLast();
+        command.execute();
+        draw();
     }
 
-
+    private void numericOnly(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        if (!newValue.matches("\\d*")) {
+            size.setText(newValue.replaceAll("[^\\d]", ""));
+        }
+    }
 }
