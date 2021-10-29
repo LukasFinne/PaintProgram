@@ -86,7 +86,7 @@ public class HelloController {
         draw();
     }
 
-    public void undo(ActionEvent actionEvent) {
+    public void undo() {
         if(model.deque.isEmpty())
             return;
         Command command = model.deque.removeLast();
