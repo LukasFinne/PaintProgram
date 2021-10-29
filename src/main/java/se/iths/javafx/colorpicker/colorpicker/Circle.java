@@ -5,16 +5,16 @@ import javafx.scene.paint.Color;
 
 public final class Circle extends Shape{
 
-    private double radius;
+
     public Circle(Color color, double x, double y, double radius) {
-        super(color, x, y);
-        this.radius = radius;
+        super(color, x, y, radius);
+
     }
 
     @Override
     public void draw(GraphicsContext gc) {
         gc.setFill(this.getColor());
-        gc.fillOval(getX()-radius, getY()-radius, 2*radius, 2*radius);
+        gc.fillOval(getX()-this.getSize(), getY()-this.getSize(), 2*this.getSize(), 2*this.getSize());
     }
 
     @Override
@@ -24,7 +24,7 @@ public final class Circle extends Shape{
 
         double distanceFromCircleCenterSquared = dx * dx + dy * dy;
 
-        return distanceFromCircleCenterSquared < radius*radius;
+        return distanceFromCircleCenterSquared < this.getSize()*this.getSize();
     }
 
 }

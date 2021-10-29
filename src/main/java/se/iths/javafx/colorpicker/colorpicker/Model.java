@@ -1,10 +1,6 @@
 package se.iths.javafx.colorpicker.colorpicker;
 
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
 
@@ -17,7 +13,10 @@ public class Model {
 
     private final BooleanProperty inColor;
     private final ObjectProperty<Color> color;
+    private  ObjectProperty<Color> prevColor;
     private final DoubleProperty size;
+    private DoubleProperty prevSize;
+
 
 
     List<Shape> shapes = new ArrayList<>();
@@ -27,7 +26,9 @@ public class Model {
     public Model() {
         this.inColor = new SimpleBooleanProperty();
         this.color = new SimpleObjectProperty<>(Color.BLACK);
+        this.prevColor = new SimpleObjectProperty<>();
         this.size = new SimpleDoubleProperty();
+        this.prevSize = new SimpleDoubleProperty();
     }
 
 
@@ -36,15 +37,35 @@ public class Model {
         return size;
     }
 
-    public Color getColor() {
-        return color.get();
+    public Double getPrevSize(){
+        return prevSize.get();
     }
+
+    public Double getSize(){
+        return size.get();
+    }
+
+    public void setSize(double size){
+        prevSize = this.size;
+        this.size.set(size);
+    }
+
+
 
     public ObjectProperty<Color> colorProperty() {
         return color;
     }
 
+    public Color getPrevColor(){
+        return prevColor.get();
+    }
+
+    public Color getColor() {
+        return color.get();
+    }
+
     public void setColor(Color color) {
+        prevColor = this.color;
         this.color.set(color);
     }
 

@@ -55,20 +55,34 @@ public class HelloController {
     }
 
     public void canvasClicked(MouseEvent event) {
-        if (square.isSelected() && !event.getButton().name().equals("SECONDARY")) {
-            model.shapes.add(Shapes.rectangleOf(event.getX(), event.getY(), model.sizeProperty().getValue(), model.getColor()));
+        if (square.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE") ) {
+            model.shapes.add(Shapes.rectangleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
             model.deque.addLast(() -> model.shapes.remove(model.shapes.size() -1));
         }
-        if (circle.isSelected() && !event.getButton().name().equals("SECONDARY")) {
-            model.shapes.add(Shapes.circleOf(event.getX(), event.getY(), model.sizeProperty().getValue(), model.getColor()));
+        if (circle.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE") ) {
+            model.shapes.add(Shapes.circleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
             model.deque.addLast(() -> model.shapes.remove(model.shapes.size() -1));
         }
 
         if (event.getButton().name().equals("SECONDARY")) {
             model.shapes.stream()
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
-                    .findFirst().ifPresent(shape -> shape.setColor(Color.RED));
+                    .findFirst().ifPresent(shape -> shape.setColor(model.getColor()));
+            model.deque.addLast(() -> model.shapes.stream()
+                    .filter(shape -> shape.isInside(event.getX(), event.getY()))
+                    .findFirst().ifPresent(shape -> shape.setColor(model.getPrevColor())));
         }
+
+        if (event.getButton().name().equals("MIDDLE")) {
+            model.shapes.stream()
+                    .filter(shape -> shape.isInside(event.getX(), event.getY()))
+                    .findFirst().ifPresent(shape -> shape.setSize(model.getSize()));
+            model.deque.addLast(() -> model.shapes.stream()
+                    .filter(shape -> shape.isInside(event.getX(), event.getY()))
+                    .findFirst().ifPresent(shape -> shape.setSize(shape.getPrevSize())));
+        }
+
+
         draw();
     }
 

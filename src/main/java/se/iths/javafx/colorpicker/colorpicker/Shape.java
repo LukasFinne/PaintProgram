@@ -5,23 +5,39 @@ import javafx.scene.paint.Color;
 
 public abstract sealed class Shape permits Circle, Square {
     private Color color;
-    private String name;
-    private int height;
-    private int width;
     private double x;
-
-
     private double y;
+    private double size;
 
-    public Shape(Color color, double x, double y) {
+
+
+    private double prevSize;
+
+    public Shape(Color color, double x, double y, double size) {
         this.color = color;
         this.x = x;
         this.y = y;
+        this.size = size;
     }
 
     public abstract void draw(GraphicsContext gc);
 
     public abstract boolean isInside(double x, double y);
+
+
+    public double getPrevSize() {
+        return prevSize;
+    }
+
+    public double getSize() {
+        return size;
+    }
+
+    public Shape setSize(double size) {
+        prevSize = this.size;
+        this.size = size;
+        return this;
+    }
 
     public Color getColor() {
         return color;
