@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class HelloControllerTest {
 
     private HelloController helloController;
-
+    static int total = 0;
 
     @BeforeEach
     void setUp() {
@@ -31,6 +31,15 @@ class HelloControllerTest {
         int expectedResult = 40;
 
         assertEquals(expectedResult,helloController.model.getSize());
+    }
+
+    @Test
+    void undoTest() {
+        total += 1;
+        helloController.model.deque.addLast(() -> total -= 1);
+        helloController.model.undo();
+        assertEquals(0, total);
+
     }
 
 

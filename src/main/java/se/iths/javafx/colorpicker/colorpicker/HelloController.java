@@ -63,7 +63,6 @@ public class HelloController {
             model.shapes.add(Shapes.circleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
             model.deque.addLast(() -> model.shapes.remove(model.shapes.size() -1));
         }
-
         if (event.getButton().name().equals("SECONDARY")) {
             model.shapes.stream()
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
@@ -72,7 +71,6 @@ public class HelloController {
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
                     .findFirst().ifPresent(shape -> shape.setColor(model.getPrevColor())));
         }
-
         if (event.getButton().name().equals("MIDDLE")) {
             model.shapes.stream()
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
@@ -87,10 +85,7 @@ public class HelloController {
     }
 
     public void undo() {
-        if(model.deque.isEmpty())
-            return;
-        Command command = model.deque.removeLast();
-        command.execute();
+        model.undo();
         draw();
     }
 

@@ -50,6 +50,12 @@ public class Model {
         this.size.set(size);
     }
 
+    public void undo(){
+        if(deque.isEmpty())
+            return;
+        Command command = deque.removeLast();
+        command.execute();
+    }
 
 
     public ObjectProperty<Color> colorProperty() {
