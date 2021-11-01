@@ -1,12 +1,10 @@
 package se.iths.javafx.colorpicker.colorpicker;
 
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.util.converter.NumberStringConverter;
 
 public class HelloController {
@@ -55,14 +53,28 @@ public class HelloController {
     }
 
     public void canvasClicked(MouseEvent event) {
+        squareSelected(event);
+        circleSelected(event);
+        rightMouseButtonClicked(event);
+        middleButtonClicked(event);
+        draw();
+    }
+
+    private void squareSelected(MouseEvent event) {
         if (square.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE") ) {
             model.shapes.add(Shapes.rectangleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
             model.deque.addLast(() -> model.shapes.remove(model.shapes.size() -1));
         }
+    }
+
+    private void circleSelected(MouseEvent event) {
         if (circle.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE") ) {
             model.shapes.add(Shapes.circleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
             model.deque.addLast(() -> model.shapes.remove(model.shapes.size() -1));
         }
+    }
+
+    private void rightMouseButtonClicked(MouseEvent event) {
         if (event.getButton().name().equals("SECONDARY")) {
             model.shapes.stream()
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
@@ -71,6 +83,9 @@ public class HelloController {
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
                     .findFirst().ifPresent(shape -> shape.setColor(model.getPrevColor())));
         }
+    }
+
+    private void middleButtonClicked(MouseEvent event) {
         if (event.getButton().name().equals("MIDDLE")) {
             model.shapes.stream()
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
@@ -79,9 +94,6 @@ public class HelloController {
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
                     .findFirst().ifPresent(shape -> shape.setSize(shape.getPrevSize())));
         }
-
-
-        draw();
     }
 
     public void undo() {
