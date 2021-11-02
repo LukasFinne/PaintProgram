@@ -63,16 +63,15 @@ public class HelloController {
     }
 
     private void squareSelected(MouseEvent event) {
-        if (square.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE") ) {
+        if (square.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE")) {
             model.shapes.add(Shapes.rectangleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
-            model.undo.addLast(() -> model.shapes.remove(model.shapes.size() -1));
+          //  model.redo.addLast(() -> model.shapes.add(Shapes.rectangleOf(event.getX(), event.getY(), model.getSize(), model.getColor()))); redo code
         }
     }
 
     private void circleSelected(MouseEvent event) {
-        if (circle.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE") ) {
+        if (circle.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE")) {
             model.shapes.add(Shapes.circleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
-            model.undo.addLast(() -> model.shapes.remove(model.shapes.size() -1));
         }
     }
 
@@ -100,11 +99,15 @@ public class HelloController {
     }
 
     public void undo() {
+        if (model.shapes.size() != 0)
+            model.undo.addLast(() -> model.shapes.remove(model.shapes.size() - 1));
+
         model.undo();
         draw();
     }
 
-    public void redo(){
+    //redo code
+    public void redo() {
         model.redo();
         draw();
     }

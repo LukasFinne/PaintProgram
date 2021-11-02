@@ -13,15 +13,16 @@ public class Model {
 
     private final BooleanProperty inColor;
     private final ObjectProperty<Color> color;
-    private  ObjectProperty<Color> prevColor;
+    private ObjectProperty<Color> prevColor;
     private final DoubleProperty size;
     private DoubleProperty prevSize;
-
 
 
     List<Shape> shapes = new ArrayList<>();
     ToggleGroup toggleGroup = new ToggleGroup();
     Deque<Command> undo = new ArrayDeque<>();
+
+    //redo code
     Deque<Command> redo = new ArrayDeque<>();
 
     public Model() {
@@ -33,28 +34,38 @@ public class Model {
     }
 
 
-
-    public DoubleProperty sizeProperty(){
+    public DoubleProperty sizeProperty() {
         return size;
     }
 
-    public Double getPrevSize(){
+    public Double getPrevSize() {
         return prevSize.get();
     }
 
-    public Double getSize(){
+    public Double getSize() {
         return size.get();
     }
 
-    public void setSize(double size){
+    public void setSize(double size) {
         prevSize = this.size;
         this.size.set(size);
     }
 
-    public void undo(){
-        if(undo.isEmpty())
+    public void undo() {
+        if (undo.isEmpty()) {
             return;
+        }
         Command command = undo.removeLast();
+        command.execute();
+    }
+
+
+    //redo code
+    public void redo() {
+        if (redo.isEmpty()) {
+            return;
+        }
+        Command command = redo.removeLast();
         command.execute();
     }
 
@@ -63,7 +74,7 @@ public class Model {
         return color;
     }
 
-    public Color getPrevColor(){
+    public Color getPrevColor() {
         return prevColor.get();
     }
 
@@ -88,10 +99,6 @@ public class Model {
         this.inColor.set(inColor);
     }
 
-    public void redo() {
-        if(!redo.isEmpty())
-            return;
-        Command command = redo.removeLast();
-        command.execute();
-    }
+
+
 }

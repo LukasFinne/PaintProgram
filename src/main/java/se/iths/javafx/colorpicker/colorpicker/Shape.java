@@ -3,15 +3,13 @@ package se.iths.javafx.colorpicker.colorpicker;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public abstract sealed class Shape permits Circle, Square {
+public abstract class Shape {
     private Color color;
     private double x;
     private double y;
     private double size;
-
-
-
     private double prevSize;
+
 
     public Shape(Color color, double x, double y, double size) {
         this.color = color;

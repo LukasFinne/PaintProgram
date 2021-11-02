@@ -32,7 +32,7 @@
     <Label text="Write your desired size: "/>
     <TextField  fx:id="size"  />
     <Button fx:id="undo" onAction="#undo" text="Undo"/>
-    <Button fx:id="redo" onAction="#redo" text="Redo"/>
+    <Button fx:id="redo" disable="true" onAction="#redo" text="Redo"/>
     <StackPane prefWidth="400" prefHeight="800">
         <ResizableCanvas fx:id="canvas" onMouseClicked="#canvasClicked"/>
     </StackPane>
