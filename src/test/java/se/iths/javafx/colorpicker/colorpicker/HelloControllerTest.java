@@ -36,7 +36,7 @@ class HelloControllerTest {
     @Test
     void undoTest() {
         total += 1;
-        helloController.model.deque.addLast(() -> total -= 1);
+        helloController.model.undo.addLast(() -> total -= 1);
         helloController.model.undo();
         assertEquals(0, total);
 

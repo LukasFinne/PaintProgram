@@ -12,7 +12,9 @@ public class HelloController {
     Model model;
 
     @FXML
-    public Button button;
+    public Button undo;
+    @FXML
+    public Button redo;
     @FXML
     public TextField size;
     public Canvas canvas;
@@ -63,14 +65,14 @@ public class HelloController {
     private void squareSelected(MouseEvent event) {
         if (square.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE") ) {
             model.shapes.add(Shapes.rectangleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
-            model.deque.addLast(() -> model.shapes.remove(model.shapes.size() -1));
+            model.undo.addLast(() -> model.shapes.remove(model.shapes.size() -1));
         }
     }
 
     private void circleSelected(MouseEvent event) {
         if (circle.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE") ) {
             model.shapes.add(Shapes.circleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
-            model.deque.addLast(() -> model.shapes.remove(model.shapes.size() -1));
+            model.undo.addLast(() -> model.shapes.remove(model.shapes.size() -1));
         }
     }
 
@@ -79,7 +81,8 @@ public class HelloController {
             model.shapes.stream()
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
                     .findFirst().ifPresent(shape -> shape.setColor(model.getColor()));
-            model.deque.addLast(() -> model.shapes.stream()
+
+            model.undo.addLast(() -> model.shapes.stream()
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
                     .findFirst().ifPresent(shape -> shape.setColor(model.getPrevColor())));
         }
@@ -90,7 +93,7 @@ public class HelloController {
             model.shapes.stream()
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
                     .findFirst().ifPresent(shape -> shape.setSize(model.getSize()));
-            model.deque.addLast(() -> model.shapes.stream()
+            model.undo.addLast(() -> model.shapes.stream()
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
                     .findFirst().ifPresent(shape -> shape.setSize(shape.getPrevSize())));
         }
@@ -100,6 +103,12 @@ public class HelloController {
         model.undo();
         draw();
     }
+
+    public void redo(){
+        model.redo();
+        draw();
+    }
+
 
     private void numericOnly(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         if (!newValue.matches("\\d*")) {

@@ -21,7 +21,8 @@ public class Model {
 
     List<Shape> shapes = new ArrayList<>();
     ToggleGroup toggleGroup = new ToggleGroup();
-    Deque<Command> deque = new ArrayDeque<>();
+    Deque<Command> undo = new ArrayDeque<>();
+    Deque<Command> redo = new ArrayDeque<>();
 
     public Model() {
         this.inColor = new SimpleBooleanProperty();
@@ -51,9 +52,9 @@ public class Model {
     }
 
     public void undo(){
-        if(deque.isEmpty())
+        if(undo.isEmpty())
             return;
-        Command command = deque.removeLast();
+        Command command = undo.removeLast();
         command.execute();
     }
 
@@ -87,4 +88,10 @@ public class Model {
         this.inColor.set(inColor);
     }
 
+    public void redo() {
+        if(!redo.isEmpty())
+            return;
+        Command command = redo.removeLast();
+        command.execute();
+    }
 }
