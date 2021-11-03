@@ -1,6 +1,8 @@
 package se.iths.javafx.colorpicker.colorpicker;
 
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
@@ -40,6 +42,12 @@ public class HelloController {
         colorPicker.valueProperty().bindBidirectional(model.colorProperty());
         size.textProperty().bindBidirectional(model.sizeProperty(), new NumberStringConverter());
         size.textProperty().addListener(this::numericOnly);
+
+        model.shapes.addListener((ListChangeListener<Shape>) change -> {
+            draw();
+        });
+
+
         canvas.widthProperty().addListener(observable -> draw());
         canvas.heightProperty().addListener(observable -> draw());
     }
@@ -64,13 +72,19 @@ public class HelloController {
     }
 
     private void squareSelected(MouseEvent event) {
-        if (square.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE"))
-            model.shapes.add(Shapes.rectangleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
+        if (square.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE")) {
+            Shape shape = Shapes.rectangleOf(event.getX(), event.getY(), model.getSize(), model.getColor());
+            model.shapes.add(shape);
+            model.sendToServer(shape);
+        }
     }
 
     private void circleSelected(MouseEvent event) {
-        if (circle.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE"))
-            model.shapes.add(Shapes.circleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
+        if (circle.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE")){
+            Shape shape = Shapes.circleOf(event.getX(), event.getY(), model.getSize(), model.getColor());
+            model.shapes.add(shape);
+            model.sendToServer(shape);
+        }
     }
 
     private void rightMouseButtonClicked(MouseEvent event) {
@@ -126,5 +140,9 @@ public class HelloController {
         if (!newValue.matches("\\d*")) {
             size.setText(newValue.replaceAll("[^\\d]", ""));
         }
+    }
+    @FXML
+    public void connect() {
+        model.connect();
     }
 }

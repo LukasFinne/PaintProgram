@@ -1,13 +1,20 @@
 package se.iths.javafx.colorpicker.colorpicker;
 
+import javafx.application.Platform;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
 
+import java.io.*;
+import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Model {
 
@@ -18,7 +25,7 @@ public class Model {
     private DoubleProperty prevSize;
 
 
-    List<Shape> shapes = new ArrayList<>();
+    ObservableList<Shape> shapes = FXCollections.observableArrayList();
     ToggleGroup toggleGroup = new ToggleGroup();
     Deque<Command> undo = new ArrayDeque<>();
 
@@ -74,10 +81,6 @@ public class Model {
         command.execute();
     }
 
-
-
-
-
     public ObjectProperty<Color> colorProperty() {
         return color;
     }
@@ -108,5 +111,53 @@ public class Model {
     }
 
 
+    private Socket socket;
+    private PrintWriter writer;
+    private BufferedReader reader;
+    public BooleanProperty connected = new SimpleBooleanProperty();
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    public void connect() {
+        if( connected.get() )
+            return;
+        try{
+            socket = new Socket("localhost", 8000);
+            OutputStream output = socket.getOutputStream();
+            writer = new PrintWriter(output, true);
+
+            InputStream input = socket.getInputStream();
+            reader = new BufferedReader(new InputStreamReader(input));
+            connected.set(true);
+            System.out.println("Connected to server");
+
+            executorService.submit(this::networkHandler);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendToServer(Shape shape) {
+        if( connected.get() ) {
+            writer.println("Created a new shape with coords, x:" + shape.getX() + " y:" + shape.getY());
+        }
+    }
+
+    private void networkHandler() {
+        try {
+            while (true) {
+                String line = reader.readLine();    // reads a line of text
+                System.out.println(line);
+                Platform.runLater(()->
+                        shapes.add(Shapes.circleOf(Math.random()*100,Math.random()*100,10.0,Color.PINK)));
+            }
+        } catch (IOException e) {
+            System.out.println("I/O error. Disconnected.");
+            Platform.runLater(()-> connected.set(false));
+        }
+    }
 }
+
+
+
+
+
