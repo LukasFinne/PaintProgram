@@ -57,6 +57,7 @@ public class HelloController {
     public void canvasClicked(MouseEvent event) {
         squareSelected(event);
         circleSelected(event);
+        testUndo();
         rightMouseButtonClicked(event);
         middleButtonClicked(event);
         draw();
@@ -72,18 +73,11 @@ public class HelloController {
             model.shapes.add(Shapes.circleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
     }
 
-
-
     private void rightMouseButtonClicked(MouseEvent event) {
         if (event.getButton().name().equals("SECONDARY")) {
             model.shapes.stream()
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
                     .findFirst().ifPresent(shape -> shape.setColor(model.getColor()));
-
-            var color = model.getColor();
-            model.redo.addFirst(() ->  model.shapes.stream()
-                    .filter(shape -> shape.isInside(event.getX(), event.getY()))
-                    .findFirst().ifPresent(shape -> shape.setColor(color)));
 
             model.undo.addLast(() -> model.shapes.stream()
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
@@ -104,15 +98,25 @@ public class HelloController {
     }
 
     public void undo() {
-        Shape redo = model.shapes.get(model.shapes.size() -1);
-        model.redo.addFirst(() -> model.shapes.add(redo));
-        if(model.shapes.size() -1 >= 0)
-            model.undo.addLast(() -> model.shapes.remove(model.shapes.size() - 1));
         model.undo();
         draw();
     }
 
+    private void testRedo() {
+
+    }
+    //kasnke inte behöver lägga till något i redo stacken när man klickar istället lägg till när jag tar bort
+    private void testUndo() {
+        if(model.shapes.size() -1 >= 0)
+            model.undo.addLast(() -> model.shapes.remove(model.shapes.size() - 1));
+
+        Shape redo = model.shapes.get(model.shapes.size() -1);
+        model.redo.addLast(() -> model.shapes.add(redo));
+
+    }
+
     public void redo() {
+
         model.redo();
         draw();
     }

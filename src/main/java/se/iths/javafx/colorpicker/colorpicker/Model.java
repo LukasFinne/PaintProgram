@@ -24,6 +24,9 @@ public class Model {
 
     //redo code
     Deque<Command> redo = new ArrayDeque<>();
+    private Command prevRedo;
+    private Command prevUndo;
+
 
     public Model() {
         this.inColor = new SimpleBooleanProperty();
@@ -52,22 +55,27 @@ public class Model {
     }
 
     public void undo() {
-        if (undo.isEmpty()) {
+        if (undo.isEmpty())
             return;
-        }
 
+        redo.addLast(redo.getLast());
         Command command = undo.removeLast();
         command.execute();
     }
 
-    //redo code
+
+
     public void redo() {
-        if (redo.isEmpty()) {
+        if (redo.isEmpty())
             return;
-        }
-        Command command = redo.removeFirst();
+
+        undo.addLast(undo.getLast());
+        Command command = redo.removeLast();
         command.execute();
     }
+
+
+
 
 
     public ObjectProperty<Color> colorProperty() {
