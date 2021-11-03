@@ -63,23 +63,27 @@ public class HelloController {
     }
 
     private void squareSelected(MouseEvent event) {
-        if (square.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE")) {
+        if (square.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE"))
             model.shapes.add(Shapes.rectangleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
-          //  model.redo.addLast(() -> model.shapes.add(Shapes.rectangleOf(event.getX(), event.getY(), model.getSize(), model.getColor()))); redo code
-        }
     }
 
     private void circleSelected(MouseEvent event) {
-        if (circle.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE")) {
+        if (circle.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE"))
             model.shapes.add(Shapes.circleOf(event.getX(), event.getY(), model.getSize(), model.getColor()));
-        }
     }
+
+
 
     private void rightMouseButtonClicked(MouseEvent event) {
         if (event.getButton().name().equals("SECONDARY")) {
             model.shapes.stream()
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
                     .findFirst().ifPresent(shape -> shape.setColor(model.getColor()));
+
+            var color = model.getColor();
+            model.redo.addFirst(() ->  model.shapes.stream()
+                    .filter(shape -> shape.isInside(event.getX(), event.getY()))
+                    .findFirst().ifPresent(shape -> shape.setColor(color)));
 
             model.undo.addLast(() -> model.shapes.stream()
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
@@ -96,17 +100,18 @@ public class HelloController {
                     .filter(shape -> shape.isInside(event.getX(), event.getY()))
                     .findFirst().ifPresent(shape -> shape.setSize(shape.getPrevSize())));
         }
+
     }
 
     public void undo() {
-        if (model.shapes.size() != 0)
+        Shape redo = model.shapes.get(model.shapes.size() -1);
+        model.redo.addFirst(() -> model.shapes.add(redo));
+        if(model.shapes.size() -1 >= 0)
             model.undo.addLast(() -> model.shapes.remove(model.shapes.size() - 1));
-
         model.undo();
         draw();
     }
 
-    //redo code
     public void redo() {
         model.redo();
         draw();

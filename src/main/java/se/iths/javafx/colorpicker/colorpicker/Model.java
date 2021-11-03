@@ -55,17 +55,17 @@ public class Model {
         if (undo.isEmpty()) {
             return;
         }
+
         Command command = undo.removeLast();
         command.execute();
     }
-
 
     //redo code
     public void redo() {
         if (redo.isEmpty()) {
             return;
         }
-        Command command = redo.removeLast();
+        Command command = redo.removeFirst();
         command.execute();
     }
 
