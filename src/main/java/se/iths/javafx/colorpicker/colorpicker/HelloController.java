@@ -170,7 +170,7 @@ public class HelloController {
     public void SaveToSVG(ActionEvent actionEvent) throws IOException {
 
         String homePath = System.getProperty("user.home");
-        Path svgPath = Path.of(homePath, "circle.SVG");
+        Path svgPath = Path.of(homePath, "shapes.SVG");
         StringBuilder svg = new StringBuilder("<svg version=\"");
         svg.append(1.1).append("\" xmlns=\"http://www.w3.org/2000/svg\"").append(" height=\"").append(canvas.getHeight()).append("\" width=\"").append(canvas.getWidth()).append("\">");
         svgShapes(svg);
