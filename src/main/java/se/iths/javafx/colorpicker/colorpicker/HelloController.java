@@ -7,7 +7,12 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.util.converter.NumberStringConverter;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class HelloController {
 
@@ -55,6 +60,7 @@ public class HelloController {
     private void draw() {
         var gc = canvas.getGraphicsContext2D();
 
+
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (var shape : model.shapes) {
             gc.setFill(shape.getColor());
@@ -80,8 +86,11 @@ public class HelloController {
     }
 
     private void circleSelected(MouseEvent event) {
-        if (circle.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE")){
+        if (circle.isSelected() && !event.getButton().name().equals("SECONDARY") && !event.getButton().name().equals("MIDDLE")) {
             Shape shape = Shapes.circleOf(event.getX(), event.getY(), model.getSize(), model.getColor());
+
+            // model.setX(Math.random()*100);
+            //  model.setY(Math.random()*100);
             model.shapes.add(shape);
             model.sendToServer(shape);
         }
@@ -119,12 +128,13 @@ public class HelloController {
     private void testRedo() {
 
     }
+
     //kasnke inte behöver lägga till något i redo stacken när man klickar istället lägg till när jag tar bort
     private void testUndo() {
-        if(model.shapes.size() -1 >= 0)
+        if (model.shapes.size() - 1 >= 0)
             model.undo.addLast(() -> model.shapes.remove(model.shapes.size() - 1));
 
-        Shape redo = model.shapes.get(model.shapes.size() -1);
+        Shape redo = model.shapes.get(model.shapes.size() - 1);
         model.redo.addLast(() -> model.shapes.add(redo));
 
     }
@@ -141,8 +151,45 @@ public class HelloController {
             size.setText(newValue.replaceAll("[^\\d]", ""));
         }
     }
+
     @FXML
     public void connect() {
         model.connect();
     }
+
+    private String format(double val) {
+        String in = Integer.toHexString((int) Math.round(val * 255));
+        return in.length() == 1 ? "0" + in : in;
+    }
+
+    public String toHexString(Color value) {
+        return "#" + (format(value.getRed()) + format(value.getGreen()) + format(value.getBlue()) + format(value.getOpacity()))
+                .toUpperCase();
+    }
+
+    public void SaveToSVG(ActionEvent actionEvent) throws IOException {
+
+        String homePath = System.getProperty("user.home");
+        Path svgPath = Path.of(homePath, "circle.SVG");
+        StringBuilder svg = new StringBuilder("<svg version=\"");
+        svg.append(1.1).append("\" xmlns=\"http://www.w3.org/2000/svg\"").append(" height=\"").append(canvas.getHeight()).append("\" width=\"").append(canvas.getWidth()).append("\">");
+        svgShapes(svg);
+        svg.append("</svg>");
+        Files.writeString(svgPath, svg.toString());
+    }
+
+    private void svgShapes(StringBuilder svg) {
+        for (var shape : model.shapes) {
+            if (shape instanceof Square) {
+                svg.append("<rect x=\"").append(shape.getX()).append("\" y=\"")
+                        .append(shape.getY())
+                        .append("\" width=\"").append(model.getSize()).append("\" height=\"").append(model.getSize()).append("\" fill=\"").append(toHexString(shape.getColor())).append("\" />");
+            } else {
+                svg.append("<circle cx=\"").append(shape.getX()).append("\" cy=\"")
+                        .append(shape.getY())
+                        .append("\" r=\"").append(model.getSize()).append("\" fill=\"").append(toHexString(shape.getColor())).append("\" />");
+            }
+        }
+    }
+
 }

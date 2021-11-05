@@ -5,6 +5,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 import java.io.*;
@@ -25,21 +26,20 @@ public class Model {
     private DoubleProperty prevSize;
 
 
+
     ObservableList<Shape> shapes = FXCollections.observableArrayList();
     ToggleGroup toggleGroup = new ToggleGroup();
     Deque<Command> undo = new ArrayDeque<>();
 
     //redo code
     Deque<Command> redo = new ArrayDeque<>();
-    private Command prevRedo;
-    private Command prevUndo;
 
 
     public Model() {
         this.inColor = new SimpleBooleanProperty();
         this.color = new SimpleObjectProperty<>(Color.BLACK);
         this.prevColor = new SimpleObjectProperty<>();
-        this.size = new SimpleDoubleProperty();
+        this.size = new SimpleDoubleProperty(20);
         this.prevSize = new SimpleDoubleProperty();
     }
 
@@ -69,7 +69,6 @@ public class Model {
         Command command = undo.removeLast();
         command.execute();
     }
-
 
 
     public void redo() {
@@ -111,6 +110,7 @@ public class Model {
     }
 
 
+
     private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
@@ -118,12 +118,13 @@ public class Model {
     ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public void connect() {
-        if( connected.get() )
+        if (connected.get())
             return;
-        try{
+        try {
             socket = new Socket("localhost", 8000);
             OutputStream output = socket.getOutputStream();
             writer = new PrintWriter(output, true);
+
 
             InputStream input = socket.getInputStream();
             reader = new BufferedReader(new InputStreamReader(input));
@@ -137,7 +138,7 @@ public class Model {
     }
 
     public void sendToServer(Shape shape) {
-        if( connected.get() ) {
+        if (connected.get()) {
             writer.println("Created a new shape with coords, x:" + shape.getX() + " y:" + shape.getY());
         }
     }
@@ -147,12 +148,14 @@ public class Model {
             while (true) {
                 String line = reader.readLine();    // reads a line of text
                 System.out.println(line);
-                Platform.runLater(()->
-                        shapes.add(Shapes.circleOf(Math.random()*100,Math.random()*100,10.0,Color.PINK)));
+                Platform.runLater(() -> {
+                    Shape shape = Shapes.circleOf(10,20,  getSize(), Color.AQUA);
+                    shapes.add(shape);
+                });
             }
         } catch (IOException e) {
             System.out.println("I/O error. Disconnected.");
-            Platform.runLater(()-> connected.set(false));
+            Platform.runLater(() -> connected.set(false));
         }
     }
 }
