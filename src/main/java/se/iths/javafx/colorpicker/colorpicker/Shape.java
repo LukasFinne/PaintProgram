@@ -3,12 +3,17 @@ package se.iths.javafx.colorpicker.colorpicker;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayDeque;
+
 public abstract class Shape implements ConvertToSVG {
     private Color color;
     private double x;
     private double y;
     private double size;
-    private double prevSize;
+    // private double prevSize;
+
+    ArrayDeque<Color> prevColor = new ArrayDeque<>();
+    ArrayDeque<Double> prevSize = new ArrayDeque<>();
 
 
     public Shape(Color color, double x, double y, double size) {
@@ -23,36 +28,37 @@ public abstract class Shape implements ConvertToSVG {
     public abstract boolean isInside(double x, double y);
 
     public double getPrevSize() {
-        return prevSize;
+        return prevSize.removeLast();
     }
 
     public double getSize() {
         return size;
     }
 
-    public Shape setSize(double size) {
-        prevSize = this.size;
+    public void setPrevSize(double size) {
         this.size = size;
-        return this;
     }
 
-    private String format(double val) {
-        String in = Integer.toHexString((int) Math.round(val * 255));
-        return in.length() == 1 ? "0" + in : in;
+    public void setSize(double size) {
+        prevSize.addLast(this.size);
+        this.size = size;
     }
 
-    public String toHexString(Color value) {
-        return "#" + (format(value.getRed()) + format(value.getGreen()) + format(value.getBlue()) + format(value.getOpacity()))
-                .toUpperCase();
+    public Color getPrevColor() {
+        return prevColor.removeLast();
     }
 
     public Color getColor() {
         return color;
     }
 
-    public Shape setColor(Color color) {
+    public void setPrevColor(Color color) {
         this.color = color;
-        return this;
+    }
+
+    public void setColor(Color color) {
+        prevColor.addLast(this.color);
+        this.color = color;
     }
 
     public double getX() {
@@ -72,5 +78,16 @@ public abstract class Shape implements ConvertToSVG {
         this.y = y;
         return this;
     }
+
+    private String format(double val) {
+        String in = Integer.toHexString((int) Math.round(val * 255));
+        return in.length() == 1 ? "0" + in : in;
+    }
+
+    public String toHexString(Color value) {
+        return "#" + (format(value.getRed()) + format(value.getGreen()) + format(value.getBlue()) + format(value.getOpacity()))
+                .toUpperCase();
+    }
+
 
 }

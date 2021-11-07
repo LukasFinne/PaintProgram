@@ -61,7 +61,7 @@ public class HelloController {
 
     public void canvasClicked(MouseEvent event) {
         String mouseButton = event.getButton().name();
-        switch (mouseButton){
+        switch (mouseButton) {
             case "SECONDARY" -> rightMouseButtonClicked(event);
             case "MIDDLE" -> middleButtonClicked(event);
             case "PRIMARY" -> shapeSelection(event);
@@ -71,43 +71,43 @@ public class HelloController {
 
     private void shapeSelection(MouseEvent event) {
         if (square.isSelected()) {
-            Shape shape = CreateShape.rectangleOf(event.getX(), event.getY(), model.getSize(), model.getColor());
+            Shape shape = CreateShape.squareOf(event.getX(), event.getY(), model.getSize(), model.getColor());
             model.shapes.add(shape);
-            model.shapeUndo();
         }
-        else {
+        if (circle.isSelected()) {
             Shape shape = CreateShape.circleOf(event.getX(), event.getY(), model.getSize(), model.getColor());
             model.shapes.add(shape);
-            model.shapeUndo();
-        }
 
+        }
+        model.shapeUndo();
     }
 
     private void rightMouseButtonClicked(MouseEvent event) {
+
         model.shapes.stream()
                 .filter(shape -> shape.isInside(event.getX(), event.getY()))
                 .findFirst().ifPresent(shape -> shape.setColor(model.getColor()));
 
         model.undo.addLast(() -> model.shapes.stream()
                 .filter(shape -> shape.isInside(event.getX(), event.getY()))
-                .findFirst().ifPresent(shape -> shape.setColor(model.getPrevColor())));
+                .findFirst().ifPresent(shape -> shape.setPrevColor(shape.getPrevColor())));
+
     }
 
     private void middleButtonClicked(MouseEvent event) {
-            model.shapes.stream()
-                    .filter(shape -> shape.isInside(event.getX(), event.getY()))
-                    .findFirst().ifPresent(shape -> shape.setSize(model.getSize()));
+        model.shapes.stream()
+                .filter(shape -> shape.isInside(event.getX(), event.getY()))
+                .findFirst().ifPresent(shape -> shape.setSize(model.getSize()));
 
-            model.undo.addLast(() -> model.shapes.stream()
-                    .filter(shape -> shape.isInside(event.getX(), event.getY()))
-                    .findFirst().ifPresent(shape -> shape.setSize(shape.getPrevSize())));
+        model.undo.addLast(() -> model.shapes.stream()
+                .filter(shape -> shape.isInside(event.getX(), event.getY()))
+                .findFirst().ifPresent(shape -> shape.setPrevSize(shape.getPrevSize())));
     }
 
     public void undo() {
         model.undo();
         draw();
     }
-
 
 
     private void numericOnly(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -126,7 +126,6 @@ public class HelloController {
         svg.append("</svg>");
         Files.writeString(svgPath, svg.toString());
     }
-
 
 
 }

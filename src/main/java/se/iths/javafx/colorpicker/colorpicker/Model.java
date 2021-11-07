@@ -51,8 +51,8 @@ public class Model {
     public void undo() {
         if (undo.isEmpty())
             return;
-        Command command = undo.removeLast();
-        command.execute();
+            Command command = undo.removeLast();
+            command.execute();
     }
 
 
