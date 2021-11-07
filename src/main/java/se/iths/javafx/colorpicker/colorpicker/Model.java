@@ -1,21 +1,12 @@
 package se.iths.javafx.colorpicker.colorpicker;
 
-import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import java.util.*;
 
-import java.io.*;
-import java.net.Socket;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class Model {
 
@@ -26,14 +17,11 @@ public class Model {
     private DoubleProperty prevSize;
 
 
-
     ObservableList<Shape> shapes = FXCollections.observableArrayList();
     ToggleGroup toggleGroup = new ToggleGroup();
     Deque<Command> undo = new ArrayDeque<>();
-
-    //redo code
-    Deque<Command> redo = new ArrayDeque<>();
-
+    StringBuilder str = new StringBuilder();
+    List<String> matches = new ArrayList<>();
 
     public Model() {
         this.inColor = new SimpleBooleanProperty();
@@ -65,20 +53,10 @@ public class Model {
         if (undo.isEmpty())
             return;
 
-        redo.addLast(redo.getLast());
         Command command = undo.removeLast();
         command.execute();
     }
 
-
-    public void redo() {
-        if (redo.isEmpty())
-            return;
-
-        undo.addLast(undo.getLast());
-        Command command = redo.removeLast();
-        command.execute();
-    }
 
     public ObjectProperty<Color> colorProperty() {
         return color;
@@ -109,55 +87,32 @@ public class Model {
         this.inColor.set(inColor);
     }
 
-
-
-    private Socket socket;
-    private PrintWriter writer;
-    private BufferedReader reader;
-    public BooleanProperty connected = new SimpleBooleanProperty();
-    ExecutorService executorService = Executors.newSingleThreadExecutor();
-
-    public void connect() {
-        if (connected.get())
-            return;
-        try {
-            socket = new Socket("localhost", 8000);
-            OutputStream output = socket.getOutputStream();
-            writer = new PrintWriter(output, true);
-
-
-            InputStream input = socket.getInputStream();
-            reader = new BufferedReader(new InputStreamReader(input));
-            connected.set(true);
-            System.out.println("Connected to server");
-
-            executorService.submit(this::networkHandler);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private String format(double val) {
+        String in = Integer.toHexString((int) Math.round(val * 255));
+        return in.length() == 1 ? "0" + in : in;
     }
 
-    public void sendToServer(Shape shape) {
-        if (connected.get()) {
-            writer.println("Created a new shape with coords, x:" + shape.getX() + " y:" + shape.getY());
-        }
+    public String toHexString(Color value) {
+        return "#" + (format(value.getRed()) + format(value.getGreen()) + format(value.getBlue()) + format(value.getOpacity()))
+                .toUpperCase();
     }
 
-    private void networkHandler() {
-        try {
-            while (true) {
-                String line = reader.readLine();    // reads a line of text
-                System.out.println(line);
-                Platform.runLater(() -> {
-                    Shape shape = Shapes.circleOf(10,20,  getSize(), Color.AQUA);
-                    shapes.add(shape);
-                });
+    public void svgShapes(StringBuilder svg) {
+        for (var shape : shapes) {
+            if (shape instanceof Square) {
+                svg.append("<rect x=\"").append(shape.getX()).append("\" y=\"")
+                        .append(shape.getY())
+                        .append("\" width=\"").append(getSize()).append("\" height=\"").append(shape.getSize()).append("\" fill=\"").append(toHexString(shape.getColor())).append("\" />");
+            } else {
+                svg.append("<circle cx=\"").append(shape.getX()).append("\" cy=\"")
+                        .append(shape.getY())
+                        .append("\" r=\"").append(shape.getSize()).append("\" fill=\"").append(toHexString(shape.getColor())).append("\" />");
             }
-        } catch (IOException e) {
-            System.out.println("I/O error. Disconnected.");
-            Platform.runLater(() -> connected.set(false));
         }
+
     }
+
+
 }
 
 
