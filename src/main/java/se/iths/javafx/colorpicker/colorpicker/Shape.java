@@ -10,7 +10,6 @@ public abstract class Shape implements ConvertToSVG {
     private double x;
     private double y;
     private double size;
-    // private double prevSize;
 
     ArrayDeque<Color> prevColor = new ArrayDeque<>();
     ArrayDeque<Double> prevSize = new ArrayDeque<>();

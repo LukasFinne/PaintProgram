@@ -13,10 +13,7 @@ public class Model {
 
     private final BooleanProperty inColor;
     private final ObjectProperty<Color> color;
-    private ObjectProperty<Color> prevColor;
     private final DoubleProperty size;
-    private DoubleProperty prevSize;
-
 
     ObservableList<Shape> shapes = FXCollections.observableArrayList();
     ToggleGroup toggleGroup = new ToggleGroup();
@@ -25,9 +22,7 @@ public class Model {
     public Model() {
         this.inColor = new SimpleBooleanProperty();
         this.color = new SimpleObjectProperty<>(Color.BLACK);
-        this.prevColor = new SimpleObjectProperty<>();
         this.size = new SimpleDoubleProperty(20);
-        this.prevSize = new SimpleDoubleProperty();
     }
 
 
@@ -35,16 +30,11 @@ public class Model {
         return size;
     }
 
-    public Double getPrevSize() {
-        return prevSize.get();
-    }
-
     public Double getSize() {
         return size.get();
     }
 
     public void setSize(double size) {
-        prevSize = this.size;
         this.size.set(size);
     }
 
@@ -60,16 +50,11 @@ public class Model {
         return color;
     }
 
-    public Color getPrevColor() {
-        return prevColor.get();
-    }
-
     public Color getColor() {
         return color.get();
     }
 
     public void setColor(Color color) {
-        prevColor = this.color;
         this.color.set(color);
     }
 
