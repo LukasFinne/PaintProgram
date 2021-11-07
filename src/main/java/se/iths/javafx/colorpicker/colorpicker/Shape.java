@@ -3,7 +3,7 @@ package se.iths.javafx.colorpicker.colorpicker;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public abstract class Shape {
+public abstract class Shape implements ConvertToSVG {
     private Color color;
     private double x;
     private double y;
@@ -22,7 +22,6 @@ public abstract class Shape {
 
     public abstract boolean isInside(double x, double y);
 
-
     public double getPrevSize() {
         return prevSize;
     }
@@ -37,9 +36,20 @@ public abstract class Shape {
         return this;
     }
 
+    private String format(double val) {
+        String in = Integer.toHexString((int) Math.round(val * 255));
+        return in.length() == 1 ? "0" + in : in;
+    }
+
+    public String toHexString(Color value) {
+        return "#" + (format(value.getRed()) + format(value.getGreen()) + format(value.getBlue()) + format(value.getOpacity()))
+                .toUpperCase();
+    }
+
     public Color getColor() {
         return color;
     }
+
     public Shape setColor(Color color) {
         this.color = color;
         return this;

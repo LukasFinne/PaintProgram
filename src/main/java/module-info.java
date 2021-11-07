@@ -4,4 +4,6 @@ module se.iths.javafx.colorpicker.colorpicker {
 
     opens se.iths.javafx.colorpicker.colorpicker to javafx.fxml;
     exports se.iths.javafx.colorpicker.colorpicker;
+    exports se.iths.javafx.colorpicker.colorpicker.Shapes;
+    opens se.iths.javafx.colorpicker.colorpicker.Shapes to javafx.fxml;
 }

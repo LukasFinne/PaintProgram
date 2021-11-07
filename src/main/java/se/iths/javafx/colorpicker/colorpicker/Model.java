@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
+
 import java.util.*;
 
 
@@ -20,8 +21,6 @@ public class Model {
     ObservableList<Shape> shapes = FXCollections.observableArrayList();
     ToggleGroup toggleGroup = new ToggleGroup();
     Deque<Command> undo = new ArrayDeque<>();
-    StringBuilder str = new StringBuilder();
-    List<String> matches = new ArrayList<>();
 
     public Model() {
         this.inColor = new SimpleBooleanProperty();
@@ -52,7 +51,6 @@ public class Model {
     public void undo() {
         if (undo.isEmpty())
             return;
-
         Command command = undo.removeLast();
         command.execute();
     }
@@ -87,31 +85,17 @@ public class Model {
         this.inColor.set(inColor);
     }
 
-    private String format(double val) {
-        String in = Integer.toHexString((int) Math.round(val * 255));
-        return in.length() == 1 ? "0" + in : in;
-    }
-
-    public String toHexString(Color value) {
-        return "#" + (format(value.getRed()) + format(value.getGreen()) + format(value.getBlue()) + format(value.getOpacity()))
-                .toUpperCase();
-    }
-
     public void svgShapes(StringBuilder svg) {
         for (var shape : shapes) {
-            if (shape instanceof Square) {
-                svg.append("<rect x=\"").append(shape.getX()).append("\" y=\"")
-                        .append(shape.getY())
-                        .append("\" width=\"").append(getSize()).append("\" height=\"").append(shape.getSize()).append("\" fill=\"").append(toHexString(shape.getColor())).append("\" />");
-            } else {
-                svg.append("<circle cx=\"").append(shape.getX()).append("\" cy=\"")
-                        .append(shape.getY())
-                        .append("\" r=\"").append(shape.getSize()).append("\" fill=\"").append(toHexString(shape.getColor())).append("\" />");
-            }
+            shape.convert(svg);
         }
-
     }
 
+
+    public void shapeUndo() {
+        if (shapes.size() - 1 >= 0)
+            undo.addLast(() -> shapes.remove(shapes.size() - 1));
+    }
 
 }
 
