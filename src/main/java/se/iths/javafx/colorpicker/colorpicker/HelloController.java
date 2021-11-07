@@ -121,7 +121,7 @@ public class HelloController {
         String homePath = System.getProperty("user.home");
         Path svgPath = Path.of(homePath, "shapes.SVG");
         StringBuilder svg = new StringBuilder();
-        svg.append("<svg version=\"").append(1.1).append("\" xmlns=\"http://www.w3.org/2000/svg\"").append(" height=\"").append(canvas.getHeight()).append("\" width=\"").append(canvas.getWidth()).append("\">");
+        svg.append("<svg version=\"").append(1.1).append("\" xmlns=\"http://www.w3.org/2000/svg\"").append(" height=\"").append(canvas.widthProperty()).append("\" width=\"").append(canvas.heightProperty()).append("\">");
         model.svgShapes(svg);
         svg.append("</svg>");
         Files.writeString(svgPath, svg.toString());
