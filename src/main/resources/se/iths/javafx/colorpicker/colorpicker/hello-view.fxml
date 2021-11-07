@@ -29,6 +29,7 @@
         </Menu>
 
     </MenuBar>
+    <Label text="You change the size of the shapes with middle mouse button. And change color with right click! "/>
     <Label text="Write your desired size: "/>
     <TextField  fx:id="size"  />
     <Button fx:id="undo" onAction="#undo" text="Undo"/>
